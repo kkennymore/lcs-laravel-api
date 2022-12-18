@@ -33,7 +33,7 @@ class Mailer
         $message .= '<body class="bg-color-wrap" style="background-color: #f1f1f1; border-radius: 8px;">';
         $message .= '<div class="bg-color" style="margin: 0 10px; padding: 2px 20px;border-radius: 8px;position: relative; display: block; background-color: #f9f9f9">';
         $message .= '<div style=" padding: 2px 10px;text-align:center; position: relative; display: block; background-color: #f9f9f9"><img width="100" src="https://bizchatpay.com/Webroot/Images/SiteImages/logo.webp" alt="Logo"></div><br>';
-        $message .= '<div class="spacing" style="padding: 2px 10px;border-radius: 8px;background-color: #f1f1f1; border: 1px solid #e1e1e1; position: relative; display: block; height: 100%; clear: both">';
+        $message .= '<div class="spacing" style="padding: 2px 10px;border-radius: 8px;background-color: #f1f1f1; border: 1px solid #e1e1e1; position: relative; display: block; height: 100%; clear: both,text-align:center">';
         $message .= $messageData;
         $message .= '</div>';
         if ($hasBtn) {

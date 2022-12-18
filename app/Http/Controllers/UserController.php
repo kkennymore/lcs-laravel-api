@@ -61,6 +61,7 @@ class UserController extends Controller
                 "username" => $users->name,
                 "email" => $users->email,
                 "password" => $users->password,
+                "account_ype" => $users->account_type == 0 ? "user" : "merchant",
                 "email_verified_at" => $users->email_verified_at,
                 "created_at" => $users->created_at,
             ],
@@ -73,6 +74,7 @@ class UserController extends Controller
         $email = Security::kenProtectFunc($request->post('email'));
         $password = Security::kenProtectFunc($request->post('password'));
         $smsCode = Security::kenProtectFunc($request->post('smsCode'));
+        $accountType = Security::kenProtectFunc($request->post('accountType'));
         /**check if the email is a valid email */
         if(!Security::emailRegularExpression($email)){
             return response()->json([
@@ -101,23 +103,26 @@ class UserController extends Controller
             'name' => $username,
             'email' => $email,
             'password' => Security::kenhashword($password, Security::passwordSalt()),
+            'account_type' => $accountType,
         ]);
         /**get otp if in table */
         $otp = EmailResets::where('email',$userModel->email)->first();
         /**check if there is an otp code and update it */
-        if(!empty($otp)){
+        if(!empty($otp) && $otp->otp_code != $smsCode){
             $otp->update([
                 'otp_code'=> $smsCode,
-                'type' => 'register',
                 'updated_at' => date('Y-m-d H:i:s',time()),
+                'type' => 'reset',
             ]);
-        }else{
-            /**create the user otp row if the row doesn't exist */
-            $userModel = EmailResets::create([
-                'user_id' => $userModel->id,
-                'email' => $userModel->email,
-                'otp_code' => $smsCode,
-                'type' => 'register',
+        }
+
+        if(empty($otp)){
+        /**create the user otp row if the row doesn't exist */
+        EmailResets::create([
+            'user_id' => $userModel->id,
+            'email' => $userModel->email,
+            'otp_code' => $smsCode,
+            'type' => 'reset',
           ]);
         }
         /*send email you user */
@@ -129,7 +134,7 @@ class UserController extends Controller
             messageData: $smsCode,
         );
         /**check if the email was sent successfully */
-        if($response){
+       if($response){
         /**return the user data back as response */
         return response()->json([
             'status' => true,
@@ -137,6 +142,7 @@ class UserController extends Controller
             "data" => [
                 "id" => $userModel->id,
                 "email" => $userModel->email,
+                "account_ype" => $accountType == 0 ? "user" : "merchant",
                 "created_at" => $userModel->created_at,
             ],
         ], 200);
@@ -148,10 +154,10 @@ class UserController extends Controller
         "data" => [
             "id" => $userModel->id,
             "email" => $userModel->email,
+            "account_ype" => $accountType,
             "created_at" => $userModel->created_at,
         ],
     ], 200);
-
     }
     /**send a password reset email to the user which contain the reset code */
     public function forgotPassword(Request $request){
@@ -186,19 +192,21 @@ class UserController extends Controller
         ->orWhere('email',$users->email)
         ->first();
         /**check if there is an otp code and update it */
-        if(!empty($otp)){
+        if(!empty($otp) && $otp->otp_code != $smsCode){
             $otp->update([
                 'otp_code'=> $smsCode,
                 'updated_at' => date('Y-m-d H:i:s',time()),
                 'type' => 'reset',
             ]);
-        }else{
-            /**create the user otp row if the row doesn't exist */
-            $userModel = EmailResets::create([
-                'user_id' => $users->id,
-                'email' => $users->email,
-                'otp_code' => $smsCode,
-                'type' => 'reset',
+        }
+
+        if(empty($otp)){
+        /**create the user otp row if the row doesn't exist */
+        $userModel = EmailResets::create([
+            'user_id' => $users->id,
+            'email' => $users->email,
+            'otp_code' => $smsCode,
+            'type' => 'reset',
           ]);
         }
         /*send email you user */
@@ -276,6 +284,10 @@ class UserController extends Controller
                 'message' => 'Wrong code entered, please check your email inbox or spam folder and use the code sent to you',
             ], 200);
         }
+        /*delete the email token */
+        $deleted = EmailResets::where('user_id', $users->id)
+        ->orWhere('email',$users->email)
+        ->delete();
         /**update the user password if otp is correct */
         $users->update([
             'password' => Security::kenhashword($password, Security::passwordSalt()),
@@ -365,7 +377,8 @@ class UserController extends Controller
                 'message' => 'Wrong code entered, please check your email inbox or spam folder and use the code sent to you',
             ], 200);
         }
-
+        /*delete the email token */
+        $deleted = EmailResets::where('email', $users->email)->delete();
         /**update the user password if otp is correct */
         if($users->email_verified_at == null){
             $users->update([

@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'email_verified_at'
+        'email_verified_at',
+        'account_type', //it will be an int value where 0 = user, 1 = merchant, 2 = admin
     ];
 
     /**
