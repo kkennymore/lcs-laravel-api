@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('product_name')->unique();
             $table->string('product_price');
             $table->string('product_category');
-            $table->numeric('discount');
-            $table->boolean('instock');
+            $table->string('discount')->numeric();
+            $table->enum('instock',[0,1]);
             $table->timestamps();
         });
     }
