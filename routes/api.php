@@ -28,5 +28,6 @@ Route::prefix('user')->group(function () {
     Route::post('reset_password', [UserController::class, 'resetPassword']);
     Route::post('forgot_password',[UserController::class, 'forgotPassword']);
     Route::post('verify',[UserController::class, 'verifyAccount']);
+    Route::post('location',[UserController::class, 'getLocation']);
     Route::post('logout',[UserController::class, 'logout']);
 });

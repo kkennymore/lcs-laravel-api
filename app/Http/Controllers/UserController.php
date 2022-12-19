@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Orders;
+use App\Models\Locations;
 use App\Models\EmailResets;
 use Carbon\Carbon;
 use App\Custom\Security;
 use App\Custom\Mailer;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Database\Eloquent\Model;
 
 class UserController extends Controller
 {
@@ -18,8 +21,22 @@ class UserController extends Controller
          /**find user in the database */
         $username = Security::kenProtectFunc($request->post('email'));
         $password = Security::kenProtectFunc($request->post('password'));
-        /**find the email in the user table */
+        /**find user in the database */
         $users = User::where('email', $username)->first();
+        /**find the email in the user table */
+        $users->location = User::find($users->id)->getLocation;
+        $users->orders = User::find($users->id)->getOrders;
+        $users->cart = User::find($users->id)->getCart;
+        $users->products = User::find($users->id)->getProducts;
+
+        //$users->OrdersOwner = Orders::find($users->id-2)->getOrdersOwner;
+        //$users->LocationOwner = Locations::find('user_id',$users->id)->getLocationsOwner;
+
+        return response()->json([
+            'status' => false,
+            'message' => 'You are not a registered user, please register',
+            'data' => $users,
+        ], 200);
 
         /**check if user exist */
         if(empty($users)){
@@ -391,6 +408,29 @@ class UserController extends Controller
             ], 200);
 
          }
+
+    }
+
+    /**get user location */
+    public function getLocation(){
+        /**find user in the database */
+        $userId = Security::kenProtectFunc($request->post('user_id'));
+        $email = Security::kenProtectFunc($request->post('email'));
+        /**find the email in the user table */
+        $users = User::where('email', $email)->first();
+        /** */
+        if(!empty($users )){
+            return response()->json([
+                'status' => true,
+                'message' => 'User location',
+                'data' => User::find($userId)->getLocation,
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Wrong inputs',
+        ], 200);
 
     }
 }
