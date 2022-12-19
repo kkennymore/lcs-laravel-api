@@ -26,17 +26,11 @@ class UserController extends Controller
         /**find the email in the user table */
         $users->location = User::find($users->id)->getLocation;
         $users->orders = User::find($users->id)->getOrders;
-        $users->cart = User::find($users->id)->getCart;
+        $users->carts = User::find($users->id)->getCart;
         $users->products = User::find($users->id)->getProducts;
 
         //$users->OrdersOwner = Orders::find($users->id-2)->getOrdersOwner;
         //$users->LocationOwner = Locations::find('user_id',$users->id)->getLocationsOwner;
-
-        return response()->json([
-            'status' => false,
-            'message' => 'You are not a registered user, please register',
-            'data' => $users,
-        ], 200);
 
         /**check if user exist */
         if(empty($users)){
@@ -81,6 +75,10 @@ class UserController extends Controller
                 "account_ype" => $users->account_type == 0 ? "user" : "merchant",
                 "email_verified_at" => $users->email_verified_at,
                 "created_at" => $users->created_at,
+                "location" => $users->location,
+                "orders" => $users->orders,
+                "carts" => $users->carts,
+                "products" => $users->products,
             ],
         ];
     }
