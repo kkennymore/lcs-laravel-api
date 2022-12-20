@@ -71,7 +71,6 @@ class UserController extends Controller
                 "id" => $users->id,
                 "username" => $users->name,
                 "email" => $users->email,
-                "password" => $users->password,
                 "account_ype" => $users->account_type == 0 ? "user" : "merchant",
                 "email_verified_at" => $users->email_verified_at,
                 "created_at" => $users->created_at,
