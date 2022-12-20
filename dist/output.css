@@ -836,10 +836,6 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-body{
-  background-color: black;
-}
-
 @media (prefers-color-scheme: dark) {
   .dark\:border-gray-700 {
     --tw-border-opacity: 1;
@@ -939,3 +935,4 @@ body{
     padding-right: 2rem;
   }
 }
+
