@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('products_images', function (Blueprint $table) {
             $table->id();
-            $table->string('product_id')->unique();
-            $table->string('images_path')->unique();
+            $table->string('product_id');
+            $table->string('image_name');
             $table->enum('status',[0,1])->default(0);
             $table->timestamps();
         });

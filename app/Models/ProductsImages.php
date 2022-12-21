@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class ProductsImages extends Model
 {
     use HasFactory;
+
+
+   protected $hidden = [
+    'id',
+    'created_at',
+    'updated_at',
+    ];
+
 }

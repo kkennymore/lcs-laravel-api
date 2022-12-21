@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\ProductsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,4 +30,8 @@ Route::prefix('user')->group(function () {
     Route::post('verify',[UserController::class, 'verifyAccount']);
     Route::post('location',[UserController::class, 'getLocation']);
     Route::post('logout',[UserController::class, 'logout']);
+});
+
+Route::prefix('products')->group(function () {
+    Route::get('/{products?}', [ProductsController::class, 'getProducts']);
 });

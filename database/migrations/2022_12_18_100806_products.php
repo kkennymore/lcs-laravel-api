@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id')->unique();
             $table->string('image_id');
+            $table->string('image_url');
             $table->string('product_name')->unique();
             $table->string('product_price');
             $table->string('product_category');
