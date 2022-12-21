@@ -24,10 +24,10 @@ class UserController extends Controller
         /**find user in the database */
         $users = User::where('email', $username)->first();
         /**find the email in the user table */
-        $users->location = User::find($users->id)->getLocation;
-        $users->orders = User::find($users->id)->getOrders;
-        $users->carts = User::find($users->id)->getCart;
-        $users->products = User::find($users->id)->getProducts;
+        // $users->location = User::find($users->id)->getLocation;
+        // $users->orders = User::find($users->id)->getOrders;
+        // $users->carts = User::find($users->id)->getCart;
+        // $users->products = User::find($users->id)->getProducts;
 
         //$users->OrdersOwner = Orders::find($users->id-2)->getOrdersOwner;
         //$users->LocationOwner = Locations::find('user_id',$users->id)->getLocationsOwner;
@@ -356,6 +356,13 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Password must be at least 6, and should contain only alphanumeric characters',
+            ], 200);
+        }
+        /*check if the password is correct */
+        if(Security::kenhashword($password, Security::passwordSalt()) != $users->password){
+            return response()->json([
+                'status' => false,
+                'message' => 'Password incorrect',
             ], 200);
         }
         /**check if user exist */

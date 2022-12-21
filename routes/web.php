@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::prefix('admin')->group(function () {
     Route::get('/', function () {
-        return view('index');
+        return view('dashmin/index');
     });
     Route::get('/products', function () {
         return view('products');
